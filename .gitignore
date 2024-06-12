@@ -163,4 +163,8 @@ ehthumbs_vista.db
 #mbox
 *.mbox
 
+#text
+*.txt 
+
+/data
 # End of https://www.toptal.com/developers/gitignore/api/python

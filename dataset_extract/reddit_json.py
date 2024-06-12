@@ -31,8 +31,8 @@ def extract_data_from_file(input_file, output_folder):
         json.dump(extracted_data_list, f, indent=4)
 
 if __name__ == "__main__":
-    input_folder_path = os.getcwd() + '/data'
-    output_folder_path = os.getcwd() + '/cleaned'
+    input_folder_path = os.getcwd() + 'dataset/reddit/raw'
+    output_folder_path = os.getcwd() + 'dataset/reddit/cleaned'
 
     for file_name in os.listdir(input_folder_path):
         input_file_path = os.path.join(input_folder_path, file_name)

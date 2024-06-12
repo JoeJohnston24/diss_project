@@ -49,11 +49,10 @@ def process_folder(mbox_folder, output_folder):
         except Exception as e:
             print(f"An error occurred while processing {file_path}: {e}")
 
-# Folder paths
-mbox_folder = "/home/joe/Desktop/diss_project/dataset/usenet_data/sort"
-output_folder = "/home/joe/Desktop/diss_project/dataset/usenet_data/extracted"
+if __name__ == "__main__":
+    input_folder_path = os.path.join(os.getcwd() +  '/data/usenet/raw')
+    output_folder_path = os.path.join(os.getcwd() + '/data/usenet/extracted')
 
-# Process mbox files in the specified folder with progress bar
-print("Processing mbox files:")
-process_folder(mbox_folder, output_folder)
-print("Extraction completed.")
+    print("Processing mbox files:")
+    process_folder(input_folder_path, output_folder_path)
+    print("Extraction completed.")

@@ -5,7 +5,6 @@ import re
 import nltk
 import contractions
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
 from tqdm import tqdm
 from datetime import datetime, timezone
 
