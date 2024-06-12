@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "diss-project"
+version = "0.1.0"
+description = "diss project that include data cleaning, sorting, database management, natural language processing, etc"
+authors = ["Joseph Johnston"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+anyascii = "0.3.2"
+beautifulsoup4 = "4.12.3"
+bs4 = "0.0.2"
+certifi = "2024.6.2"
+charset-normalizer = "3.3.2"
+click = "8.1.7"
+contractions = "0.1.73"
+futures = "3.0.5"
+goslate = "1.5.4"
+idna = "3.7"
+joblib = "1.4.2"
+nltk = "3.8.1"
+pyahocorasick = "2.1.0"
+pydictionary = "2.0.1"
+regex = "2024.5.15"
+requests = "2.32.3"
+soupsieve = "2.5"
+textsearch = "0.0.24"
+tqdm = "4.66.4"
+urllib3 = "2.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
