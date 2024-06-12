@@ -6,7 +6,6 @@ nltk.download('words')
 from nltk.corpus import words
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize
-from PyDictionary import PyDictionary
 
 english_words = set(words.words())
 
@@ -14,7 +13,6 @@ class DatasetCleaner:
     def __init__(self, input_file, output_file):
         self.input_file = input_file
         self.output_file = output_file
-        self.dictionary = PyDictionary()
 
     def clean_dataset(self):
         print(f"Cleaning dataset from {self.input_file} to {self.output_file}...")
