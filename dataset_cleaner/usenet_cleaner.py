@@ -1,16 +1,23 @@
 import os
 import json
 import re
+import nltk
+nltk.download('words')
+from nltk.corpus import words
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
+from PyDictionary import PyDictionary
+
+english_words = set(words.words())
 
 class DatasetCleaner:
     def __init__(self, input_file, output_file):
         self.input_file = input_file
         self.output_file = output_file
+        self.dictionary = PyDictionary()
 
     def clean_dataset(self):
+        print(f"Cleaning dataset from {self.input_file} to {self.output_file}...")
         with open(self.input_file, 'r', encoding='utf-8') as file:
             data = json.load(file)
             cleaned_data = self._clean_json_data(data)
@@ -19,24 +26,28 @@ class DatasetCleaner:
         if non_empty_comments:
             with open(self.output_file, 'w', encoding='utf-8') as file:
                 json.dump(non_empty_comments, file, indent=2)
+        print("Dataset cleaning completed.")
 
     def _clean_json_data(self, data):
+        print("Cleaning JSON data...")
         if isinstance(data, list):
-            for entry in data:
+            cleaned_data = []
+            for entry in tqdm(data, desc="Cleaning comments", unit="comment"):
                 if 'comment' in entry:
                     entry['comment'] = self._clean_comment(entry['comment'])
-            return data
+                cleaned_data.append(entry)
+            print("JSON data cleaning completed.")
+            return cleaned_data
 
     def _clean_comment(self, comment):
         # Define cleaning rules
         cleaning_rules = [
-            # Remove specific patterns (websites with .com)
+            # Remove URLs
             (r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', ''),
-            # Remove words with . in the phrasing
+            # Remove words with dots or hyphens in them
             (r'\b\w*\.\w+\b', ''),
-            # Remove words with hyphens
             (r'\b\w*-\w+\b', ''),
-            # Remove words that have punctuation attached to them
+            # Remove words with attached punctuation
             (r'\b\w*[\.,;\'"!?]+\w+\b', ''),
             # Remove words in all caps
             (r'\b[A-Z]+\b', ''),
@@ -48,9 +59,9 @@ class DatasetCleaner:
             (r'\b([a-zA-Z]+)\b', lambda match: match.group(0).lower()),
             # Remove non-alphabetic characters
             (r'[^a-zA-Z\s\'-]', ''),
-            # Basic email removal
+            # Remove email addresses
             (r'\S+@\S+', ''),
-            # Remove noise words related to Google Threads
+            # Remove Google Threads-related noise
             (r'X-Google-Thread:.*', ''),
             # Remove specific headers
             (r'(--|Xref|X-Google-ArrivalTime|-- PST|Reply-To|X-Antivirus|MIME-Version|X-Usenet-Provider|X-Face|X-No-Archive|X-Plain|X-It-Strategy|X-Antivirus-Status|VPS|logging-data|X-Abuse-and-DMCA-Info|Injection-|From|X-Google-Thread|X-Google-Attributes|X-Google-NewGroupId|X-Google-Language|Received|Path|From|Newsgroups:|alt.politics.communism|Subject|Organization|Lines|Message-ID|NNTP-Posting-Host|Mime-Version|X-Trace|X-Complaints-To|NNTP-Posting-Date|Complaints-To|Injection-Info|posting-account|User-Agent|Bytes|Content-Type|Content-Transfer-Encoding|References|X-Priority|X-MSMail-Priority|X-Newsreader|X-MimeOLE|NNTP-Posting-).*', ''),
@@ -63,10 +74,16 @@ class DatasetCleaner:
         # Tokenize the comment using NLTK
         tokens = word_tokenize(comment)
 
+        # Remove non-English words
+        tokens = [word for word in tokens if self._is_english_word(word)]
+
         # Join tokens back to form the cleaned comment
         cleaned_comment = ' '.join(tokens)
 
         return cleaned_comment
+
+    def _is_english_word(self, word):
+        return word.lower() in english_words
 
 
 def main():
@@ -85,6 +102,7 @@ def main():
     print("Data cleaning complete. Cleaned files are saved in the output directory.")
 
 def clean_json_file(input_file, output_file):
+    print(f"Cleaning JSON file: {input_file} -> {output_file}")
     cleaner = DatasetCleaner(input_file, output_file)
     cleaner.clean_dataset()
 
