@@ -4,12 +4,15 @@ version = "0.1.0"
 description = "diss project that include data cleaning, sorting, database management, natural language processing, etc"
 authors = ["Joseph Johnston"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.12"
 sqlalchemy = "^2.0.30"
 psycopg2-binary = "^2.9.9"
 spacy = "^3.7.5"
+textblob = "^0.18.0.post0"
+scikit-learn = "^1.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
