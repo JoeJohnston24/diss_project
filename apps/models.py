@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime, Text, Boolean
+from sqlalchemy import Column, Integer, DateTime, Text, Boolean, Float
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.dialects.postgresql import JSONB  
 
@@ -15,10 +15,11 @@ class Usenet(Base):
     has_detection = Column(Boolean, default=False)  
     objective_patterns = Column(JSONB)  
     subjective_patterns = Column(JSONB)
-    possessive_patterns = Column(JSONB) 
+    possessive_patterns = Column(JSONB)
+    sentiment_score = Column(Float) 
     
     def __repr__(self):
-        return f"<Usenet(id={self.id}, forum_name='{self.forum_name}', post_date='{self.post_date}', comment='{self.comment}', has_detection={self.has_detection}, objective_patterns='{self.objective_patterns}, subjective_patterns='{self.subjective_patterns}'), possessive_patterns ='{self.possessive_patterns}' ')>"
+        return f"<Usenet(id={self.id}, forum_name='{self.forum_name}', post_date='{self.post_date}', comment='{self.comment}', has_detection={self.has_detection}, objective_patterns='{self.objective_patterns}, subjective_patterns='{self.subjective_patterns}'), possessive_patterns ='{self.possessive_patterns}', sentiment_score = '{self.sentiment_score}' ')>"
     
 # Define a class representing a table in the database
 class Reddit(Base):
@@ -31,9 +32,10 @@ class Reddit(Base):
     objective_patterns = Column(JSONB) 
     subjective_patterns = Column(JSONB) 
     possessive_patterns = Column(JSONB) 
+    sentiment_score = Column(Float)
 
     def __repr__(self):
-        return f"<Reddit(id={self.id}, forum_name='{self.forum_name}', post_date='{self.post_date}', comment='{self.comment}', has_detection={self.has_detection}, objective_patterns='{self.objective_patterns}', subjective_patterns='{self.subjective_patterns}'), possessive_patterns ='{self.possessive_patterns}' )>"
+        return f"<Reddit(id={self.id}, forum_name='{self.forum_name}', post_date='{self.post_date}', comment='{self.comment}', has_detection={self.has_detection}, objective_patterns='{self.objective_patterns}', subjective_patterns='{self.subjective_patterns}'), possessive_patterns ='{self.possessive_patterns}', sentiment_score = '{self.sentiment_score}' )>"
     
 class Test(Base):
     __tablename__ = 'test'
@@ -46,6 +48,7 @@ class Test(Base):
     objective_patterns = Column(JSONB)
     subjective_patterns = Column(JSONB)
     possessive_patterns = Column(JSONB) 
+    sentiment_score = Column(Float)
 
     def __repr__(self):
-        return f"<Test(id={self.id}, forum_name='{self.forum_name}', post_date='{self.post_date}', comment='{self.comment}', has_detection={self.has_detection}, objective_patterns='{self.objective_patterns}'), subjective_patterns='{self.subjective_patterns}'), possessive_patterns ='{self.possessive_patterns}' >"
+        return f"<Test(id={self.id}, forum_name='{self.forum_name}', post_date='{self.post_date}', comment='{self.comment}', has_detection={self.has_detection}, objective_patterns='{self.objective_patterns}'), subjective_patterns='{self.subjective_patterns}'), possessive_patterns ='{self.possessive_patterns}', sentiment_score = '{self.sentiment_score}' >"
