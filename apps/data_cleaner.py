@@ -43,15 +43,25 @@ def process_file(input_file, output_dir):
     seen_comments = set()
 
     for i, item in enumerate(tqdm(data, desc="Cleaning comments", unit="comment")):
-        body = item.get('body', '')
+        if 'comment' in item and 'date' in item:
+            # Usenet data structure
+            body = item.get('comment', '')
+            date = item.get('date', '')
+        elif 'body' in item and 'created_utc' in item:
+            # Reddit data structure
+            body = item.get('body', '')
+            date = convert_utc_to_date(item.get('created_utc', ''))
+        else:
+            continue  # Skip if no recognizable comment and date fields found
 
+        # Skip deleted or removed comments
         if body in ['[deleted]', '[removed]'] or body in seen_comments:
             continue
 
+        # Clean the comment text
         cleaned_body = clean_text(body)
 
         if cleaned_body:
-            date = convert_utc_to_date(item.get('created_utc', ''))
             cleaned_data.append({'date': date, 'comment': cleaned_body})
             seen_comments.add(body)
 
@@ -61,8 +71,8 @@ def process_file(input_file, output_dir):
         json.dump(cleaned_data, cleaned_file, indent=4)
 
 def main():
-    input_dir = "/home/joe/Desktop/diss_project/dataset/reddit_data/extracted"
-    output_dir = "/home/joe/Desktop/diss_project/dataset/reddit_data/clean"
+    input_dir = "/home/joe/diss_project/data/usenet/extracted"
+    output_dir = "/home/joe/diss_project/data/usenet/cleaned"
 
     json_files = [os.path.join(input_dir, f) for f in os.listdir(input_dir) if f.endswith(".json")]
 

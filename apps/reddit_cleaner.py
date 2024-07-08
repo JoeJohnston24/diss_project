@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 import models
 import database
 
+# Download required NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
 
@@ -36,6 +37,7 @@ def clean_text(text):
 def convert_utc_to_date(utc_timestamp):
     return datetime.fromtimestamp(int(utc_timestamp), tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 
+
 def process_file(input_file, session):
     print(f"Processing file: {input_file}")
     with open(input_file, 'r') as file:
@@ -57,16 +59,24 @@ def process_file(input_file, session):
             cleaned_data.append({'date': date, 'comment': cleaned_body})
             seen_comments.add(body)
 
-    # Uncomment the following lines to insert cleaned data into the database
+    # Insert cleaned data into the test table
     for data_entry in cleaned_data:
-        reddit_entry = models.Reddit(post_date=data_entry['date'], comment=data_entry['comment'])
-        session.add(reddit_entry)
+        test_entry = models.Test(
+            forum_name=None,  # Set to None or provide a forum name if available
+            post_date=data_entry['date'],
+            comment=data_entry['comment'],
+            has_subjective=False,
+            subjective_patterns=[]
+        )
+        session.add(test_entry)
     session.commit()
 
+    # Save cleaned data to a JSON file
     filename = os.path.basename(input_file)
     output_file = os.path.join(f"cleaned_{filename}")
     with open(output_file, 'w') as cleaned_file:
         json.dump(cleaned_data, cleaned_file, indent=4)
+
 
 def main():
     input_folder_path = os.getcwd() + '/data/reddit/extracted'
@@ -83,14 +93,11 @@ def main():
     for filename in tqdm(json_files, desc="Processing files", unit="file"):
         process_file(filename, session)
 
-    for file_name in os.listdir(input_folder_path):
-            input_file_path = os.path.join(input_folder_path, file_name)
-            main(input_file_path)
-            
     # Close the session
-    database.session.close()
+    session.close()
 
     print("Data cleaning complete. Cleaned files are saved in the output directory.")
+
 
 if __name__ == "__main__":
     main()
